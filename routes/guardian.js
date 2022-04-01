@@ -50,7 +50,7 @@ router.post('/add', async (req, res, next) => {
 
             res.status(200).json({
                 success: true,
-                token: token
+                guardian_token: token
             });
         });
 
@@ -100,7 +100,7 @@ router.get('/retrieve', async (req, res, next) => {
                 res.status(200).json({
                     success: true,
                     msg: 'Guardians Found.',
-                    token: token,
+                    guardian_token: token,
                     guardian: guardians_list
                 });
             }
