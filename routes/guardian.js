@@ -28,77 +28,65 @@ router.post('/add', async (req, res, next) => {
     const {guardianName, userId, phone} = req.body;
 
     try {
-    let guardian = new Guardian();
+        let guardian = new Guardian();
 
-    guardian.guardianName = guardianName;
-    guardian.userId = userId;
-    guardian.phone = phone;
+        guardian.guardianName = guardianName;
+        guardian.userId = userId;
+        guardian.phone = phone;
 
-    await guardian.save();
+        await guardian.save();
 
-    const payload = {
-        user: {
-            id: guardian.id
+        const payload = {
+            user: {
+                id: guardian.id
+            }
         }
-    }
 
 
-    jwt.sign(payload, process.env.jwtUserSecret, {
-        expiresIn: 360000
-    }, (err, token) => {
-        if (err) throw err;
+        jwt.sign(payload, process.env.jwtUserSecret, {
+            expiresIn: 360000
+        }, (err, token) => {
+            if (err) throw err;
 
-        res.status(200).json({
-            success: true,
-            token: token
+            res.status(200).json({
+                success: true,
+                token: token
+            });
         });
-    });
 
 
-}
-catch
-(err)
-{
-    console.log(err);
-    res.status(402).json({
-        success: false,
-        message: 'Something went wrong.'
-    })
-}
+    } catch
+        (err) {
+        console.log(err);
+        res.status(402).json({
+            success: false,
+            message: 'Something went wrong.'
+        })
+    }
 })
 ;
 
 
-router.post('/login', async (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
+router.post('/retrieve', async (req, res, next) => {
+    const userId = req.body.userId;
 
     try {
 
-        let user = await Guardian.findOne({
-            email: email
+        let guardian = await Guardian.findOne({
+            userId: userId
         });
 
-        if (!user) {
+        if (!guardian) {
             return res.status(400).json({
                 success: false,
-                msg: 'Guardian does not exists. Please register first.'
+                msg: 'Guardian does not exists. Please add a guardian.'
             });
         }
 
-
-        const isMatch = await bcryptjs.compare(password, user.password);
-
-        if (!isMatch) {
-            return res.status(400).json({
-                success: false,
-                msg: 'Password is incorrect.'
-            });
-        }
 
         const payload = {
-            user: {
-                id: user.id
+            guardian: {
+                id: guardian.id
             }
         }
 
@@ -113,7 +101,7 @@ router.post('/login', async (req, res, next) => {
                     success: true,
                     msg: 'Guardian logged in successfully.',
                     token: token,
-                    user: user
+                    guardian: guardian
                 });
             }
         )
