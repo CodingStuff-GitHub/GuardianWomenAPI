@@ -25,19 +25,19 @@ const jwt = require('jsonwebtoken');
 // });
 
 router.post('/add', async (req, res, next) => {
-    const {guardianName, userId, phone} = req.body;
+    const {guardian_name, user_email, guardian_phone} = req.body;
 
     try {
         let guardian = new Guardian();
 
-        guardian.guardianName = guardianName;
-        guardian.userId = userId;
-        guardian.phone = phone;
+        guardian.guardian_name = guardian_name;
+        guardian.user_email = user_email;
+        guardian.guardian_phone = guardian_phone;
 
         await guardian.save();
 
         const payload = {
-            user: {
+            guardian: {
                 id: guardian.id
             }
         }
@@ -68,12 +68,12 @@ router.post('/add', async (req, res, next) => {
 
 
 router.get('/retrieve', async (req, res, next) => {
-    const userId = req.body.userId;
+    const user_email = req.body.user_email;
 
     try {
-        let guardians_list = await Guardian.find({userId: userId});
+        let guardians_list = await Guardian.find({user_email: user_email});
         let guardian = await Guardian.findOne({
-            userId: userId
+            user_email: user_email
         });
 
         if (!guardian) {

@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
 const guardianSchema = new mongoose.Schema({
-    guardianName: {
+    guardian_name: {
         type: String,
         required: true
     },
-    userId: {
+    user_email: {
         type: String,
         required: true
     },
-    phone: {
+    guardian_phone: {
         type: String,
         required: true
     }
