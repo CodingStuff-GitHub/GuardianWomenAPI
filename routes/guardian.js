@@ -1,28 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Guardian = require('../models/Guardian');
-const bcryptjs = require('bcryptjs');
-const user_jwt = require('../middleware/user_jwt');
+require('bcryptjs');
+require('../middleware/user_jwt');
 const jwt = require('jsonwebtoken');
-
-
-// router.get('/', user_jwt, async(req, res, next) => {
-//     try {
-//
-//         const user = await Guardian.findById(req.user.id).select('-password');
-//             res.status(200).json({
-//                 success: true,
-//                 user: user
-//             });
-//     } catch(error) {
-//         console.log(error.message);
-//         res.status(500).json({
-//             success: false,
-//             msg: 'Server Error.'
-//         })
-//         next();
-//     }
-// });
 
 router.post('/add', async (req, res, next) => {
     const {guardianName, userId, phone} = req.body;
@@ -99,7 +80,7 @@ router.post('/retrieve', async (req, res, next) => {
 
                 res.status(200).json({
                     success: true,
-                    msg: 'Guardian logged in successfully.',
+                    msg: 'Guardians Found.',
                     token: token,
                     guardian: guardians_list
                 });
