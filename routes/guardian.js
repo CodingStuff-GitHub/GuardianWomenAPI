@@ -6,85 +6,70 @@ const user_jwt = require('../middleware/user_jwt');
 const jwt = require('jsonwebtoken');
 
 
-router.get('/', user_jwt, async(req, res, next) => {
-    try {
+// router.get('/', user_jwt, async(req, res, next) => {
+//     try {
+//
+//         const user = await Guardian.findById(req.user.id).select('-password');
+//             res.status(200).json({
+//                 success: true,
+//                 user: user
+//             });
+//     } catch(error) {
+//         console.log(error.message);
+//         res.status(500).json({
+//             success: false,
+//             msg: 'Server Error.'
+//         })
+//         next();
+//     }
+// });
 
-        const user = await Guardian.findById(req.user.id).select('-password');
-            res.status(200).json({
-                success: true,
-                user: user
-            });
-    } catch(error) {
-        console.log(error.message);
-        res.status(500).json({
-            success: false,
-            msg: 'Server Error.'
-        })
-        next();
+router.post('/add', async (req, res, next) => {
+    const {guardianName, userId, phone} = req.body;
+
+    try {
+    let guardian = new Guardian();
+
+    guardian.guardianName = guardianName;
+    guardian.userId = userId;
+    guardian.phone = phone;
+
+    await guardian.save();
+
+    const payload = {
+        user: {
+            id: guardian.id
+        }
     }
-});
-
-router.post('/register', async (req, res, next) => {
-    const { username, email, password } = req.body;
-
-    try {
-        
-        let user_exist = await Guardian.findOne({ email: email });
-
-        if(user_exist) {
-            return res.status(400).json({
-                success: false,
-                msg: 'Guardian already exists.'
-            });
-        }
-        
-        let user = new Guardian();
-
-        user.username = username;
-        user.email = email;
-
-        const salt = await bcryptjs.genSalt(10);
-        user.password = await bcryptjs.hash(password, salt);
-
-        let size = 200;
-        user.avatar = "https://gravatar.com/avatar/?s="+size+'&d=retro';
 
 
-        await user.save();
+    jwt.sign(payload, process.env.jwtUserSecret, {
+        expiresIn: 360000
+    }, (err, token) => {
+        if (err) throw err;
 
-        const payload = {
-            user: {
-                id: user.id
-            }
-        }
-
-
-        jwt.sign(payload, process.env.jwtUserSecret, {
-            expiresIn: 360000
-        }, (err, token) => {
-            if(err) throw err;
-            
-            res.status(200).json({
-                success: true,
-                token: token
-            });
+        res.status(200).json({
+            success: true,
+            token: token
         });
+    });
 
 
+}
+catch
+(err)
+{
+    console.log(err);
+    res.status(402).json({
+        success: false,
+        message: 'Something went wrong.'
+    })
+}
+})
+;
 
-    } catch(err) {
-        console.log(err);
-        res.status(402).json({
-            success: false,
-            message: 'Something went wrong.'
-        })
-    }
-});
 
-
-
-
-router.post('/login', async(req, res, next) => {
+router.post('/login', async (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -94,7 +79,7 @@ router.post('/login', async(req, res, next) => {
             email: email
         });
 
-        if(!user) {
+        if (!user) {
             return res.status(400).json({
                 success: false,
                 msg: 'Guardian does not exists. Please register first.'
@@ -104,7 +89,7 @@ router.post('/login', async(req, res, next) => {
 
         const isMatch = await bcryptjs.compare(password, user.password);
 
-        if(!isMatch) {
+        if (!isMatch) {
             return res.status(400).json({
                 success: false,
                 msg: 'Password is incorrect.'
@@ -122,7 +107,7 @@ router.post('/login', async(req, res, next) => {
             {
                 expiresIn: 360000
             }, (err, token) => {
-                if(err) throw err;
+                if (err) throw err;
 
                 res.status(200).json({
                     success: true,
@@ -133,7 +118,7 @@ router.post('/login', async(req, res, next) => {
             }
         )
 
-    } catch(error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             success: false,

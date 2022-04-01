@@ -1,19 +1,15 @@
 const mongoose = require('mongoose');
 
 const guardianSchema = new mongoose.Schema({
-    username: {
+    guardianName: {
         type: String,
         required: true
     },
-    avatar: {
-        type: String
-    },
-
-    email: {
+    userId: {
         type: String,
         required: true
     },
-    password: {
+    phone: {
         type: String,
         required: true
     }
