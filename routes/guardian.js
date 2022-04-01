@@ -71,7 +71,7 @@ router.post('/retrieve', async (req, res, next) => {
     const userId = req.body.userId;
 
     try {
-
+        let guardians_list = await Guardian.find({userId: userId});
         let guardian = await Guardian.findOne({
             userId: userId
         });
@@ -101,7 +101,7 @@ router.post('/retrieve', async (req, res, next) => {
                     success: true,
                     msg: 'Guardian logged in successfully.',
                     token: token,
-                    guardian: guardian
+                    guardian: guardians_list
                 });
             }
         )
