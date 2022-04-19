@@ -71,7 +71,6 @@ router.get('/retrieve', async (req, res, next) => {
     const user_email = req.body.user_email;
 
     try {
-        let guardians_list = await Guardian.find({user_email: user_email});
         let guardian = await Guardian.findOne({
             user_email: user_email
         });
@@ -101,7 +100,7 @@ router.get('/retrieve', async (req, res, next) => {
                     success: true,
                     msg: 'Guardians Found.',
                     guardian_token: token,
-                    guardian: guardians_list
+                    guardian: guardian
                 });
             }
         )
